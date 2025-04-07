@@ -1,0 +1,28 @@
+PROJECT DOCUMENTATION...
+
+The project was to create two servers , server b is to consume raw emmojis from emotegen and when consuming it should get aggregated emotegen, and 
+the threshold was created with likes on 0.5 , server a is to consume the aggregated emote from server b and expose it to frontend . 
+
+Attached to the root are the screenshot of the outcome .
+
+In the server B i made use of Node.js and Kafka to consumer raw-emote-data which send the aggregated emote to Server a
+
+Server a consumes the aggregated emote and sends it to the frontend using websocket 
+
+In the frontend i used React .
+
+Starting the container ,it takes like 5 trial to connect together , so basically install docker on your system , and server b and emotegen , 
+
+may take time to start due to econrefused , it will start but it will take time , you can basically start it from the docker ,
+
+If server a and frontend are not displaying it might take time , just restart it from docker .
+
+If there things that i need to work on i won' t mind getting a feed back . 
+
+I did this assignment alone , because the JJT contacted me that they are filled up and they are three friends . 
+
+Thanks . 
+
+The architectural was as planned , server b and server a are in the backendfolder and frontend is in the frontend folder . 
+
+Well i was curious about the whole stuff , and that made me try to make it work , no gas . 

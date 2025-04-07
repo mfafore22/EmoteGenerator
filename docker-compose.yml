@@ -1,0 +1,65 @@
+services:
+  kafka:
+    image : bitnami/kafka:latest
+    environment:
+     KAFKA_BROKER: kafka:9092
+     KAFKAJS_NO_PARTITIONER_WARNING: 1
+     KAFKA_ENABLE_KRAFT: "yes"
+     KAFKA_CFG_NODE_ID: "1"
+     KAFKA_CFG_PROCESS_ROLES: "broker,controller"
+     KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+     KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
+     KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+     KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+     KAFKA_CFG_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+     KAFKA_KRAFT_CLUSTER_ID: "kraft-cluster"
+     AJS_NO_PARTITIONER_WARNING: 1
+    networks:
+     - backend
+  emotegen:
+    build: 
+      context: ./backend/emotegen
+    depends_on:
+     - kafka
+    environment: 
+     - KAFKA_BROKER=kafka:9092
+    ports:
+      - "3004:3002"
+    networks:
+      - backend
+  server_b:
+      build: 
+         context: ./backend/server_b
+         dockerfile: Dockerfile
+      ports: 
+        - "3001:3000"
+      depends_on:
+        - emotegen
+      environment:
+       - KAFKA_BROKER=kafka:9092
+      networks:
+        - backend
+  server_a:
+    build: 
+     context: ./backend/server_a
+     dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server_b
+    environment:
+      - KAFKA_BROKER=kafka:9092
+    networks:
+      - backend
+  frontend: 
+    build: 
+       context: ./frontend
+       dockerfile: Dockerfile
+    ports:
+      - "3002:80"
+    depends_on: 
+      - server_a
+networks:
+  backend:
+   driver: bridge
+
